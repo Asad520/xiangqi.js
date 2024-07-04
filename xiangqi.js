@@ -1,5 +1,5 @@
 /* @license
- * Copyright (c) 2019-2023, lengyanyu258 (lengyanyu258@outlook.com)
+ * Copyright (c) 2019-2024, lengyanyu258 <lengyanyu258@outlook.com>
  * Released under the BSD-2-Clause license
  * https://github.com/lengyanyu258/xiangqi.js/blob/master/LICENSE
  */
@@ -129,7 +129,7 @@ const Xiangqi = function(fen) {
       }
     }
 
-    turn = tokens[1];
+    turn = tokens[1] === BLACK ? BLACK : RED;
 
     half_moves = parseInt(tokens[4], 10);
     move_number = parseInt(tokens[5], 10);
@@ -199,8 +199,8 @@ const Xiangqi = function(fen) {
       return result(5);
     }
 
-    /* 6th criterion: 2nd field is "r" (red) or "b" (black)? */
-    if (!/^([rb])$/.test(tokens[1])) {
+    /* 6th criterion: 2nd field is "r/w" (red) or "b" (black)? */
+    if (!/^([rwb])$/.test(tokens[1])) {
       return result(6);
     }
 

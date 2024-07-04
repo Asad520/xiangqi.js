@@ -422,6 +422,10 @@ describe('FEN', () => {
     { fen: 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR r - - 0 1', should_pass: true },
     { fen: 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/4P4/P1P3P1P/1C5C1/9/RNBAKABNR b - - 0 1', should_pass: true },
     { fen: '1nbakabn1/9/1c5c1/p1p3p1p/4p4/4P4/P1P3P1P/1C5C1/9/1NBAKABN1 b - - 1 2', should_pass: true },
+    // Support "w" or not? -- Yes. For compatibility. However, the result in fen is still "r".
+    { fen: 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1', should_pass: true },
+    // It's ridiculous to accept other color in fen string.
+    { fen: 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR y - - 0 1', should_pass: false },
 
     /* incomplete FEN string */
     { fen: 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABN r - - 0 1', should_pass: false },
@@ -438,7 +442,7 @@ describe('FEN', () => {
 
     test(`${position.fen} (${position.should_pass})`, () => {
       xiangqi.load(position.fen);
-      expect(xiangqi.fen() === position.fen).toBe(position.should_pass);
+      expect(xiangqi.fen() === position.fen.replace(' w ', ' r ')).toBe(position.should_pass);
     });
 
   });
