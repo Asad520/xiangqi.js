@@ -1,8 +1,5 @@
-// noinspection NpmUsedModulesInstalled
 const describe = require('@jest/globals').describe;
-// noinspection NpmUsedModulesInstalled
 const test = require('@jest/globals').test;
-// noinspection NpmUsedModulesInstalled
 const expect = require('@jest/globals').expect;
 
 const Xiangqi = require('../xiangqi').Xiangqi;
@@ -1345,8 +1342,8 @@ describe('Load PGN (ICCS Format)', () => {
   const newline_chars = ['\n', '<br />', '\r\n', 'BLAH'];
 
   tests.forEach((t, i) => {
-    newline_chars.forEach((newline, j) => {
-      test(`${i}${String.fromCharCode(97 + j)}`, () => {
+    newline_chars.forEach((newline) => {
+      test(`No.${i + 1} newline char: '${newline.replace(/\r/g, '\\r').replace(/\n/g, '\\n')}'`, () => {
         const sloppy = t.sloppy || false;
         const result = xiangqi.load_pgn(t.pgn.join(newline), {
           sloppy: sloppy,

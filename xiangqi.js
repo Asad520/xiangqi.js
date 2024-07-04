@@ -1313,6 +1313,7 @@ const Xiangqi = function(fen) {
       if ('FEN' in headers) {
         if (!load(headers.FEN, true)) {
           // second argument to load: don't clear the headers
+          console.warn('load header FEN failed!');
           return false;
         }
       }
@@ -1356,6 +1357,7 @@ const Xiangqi = function(fen) {
          * latest valid position)
          */
         if (move == null) {
+          console.warn(`impossible move: ${moves[half_move]}!\n${ascii()}`);
           return false;
         } else {
           make_move(move);
@@ -1371,6 +1373,7 @@ const Xiangqi = function(fen) {
       } else {
         move = move_from_iccs(move, sloppy);
         if (move == null) {
+          console.warn(`impossible last move: ${moves[moves.length - 1]}!\n${ascii()}`);
           return false;
         } else {
           make_move(move);
