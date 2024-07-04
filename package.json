@@ -1,6 +1,6 @@
 {
   "name": "xiangqi.js",
-  "version": "0.5.1-dev",
+  "version": "0.5.2-dev",
   "description": "A Javascript Chinese chess/cchess/Xiangqi library for xiangqi move generation/validation, piece placement/movement, and check/checkmate/draw detection",
   "author": "lengyanyu258 <lengyanyu258@outlook.com> (https://github.com/lengyanyu258)",
   "license": "BSD-2-Clause",
@@ -24,11 +24,17 @@
     }
   ],
   "devDependencies": {
-    "jest": "29.5.0",
-    "terser": "^5.17.1"
+    "eslint": "latest",
+    "globals": "latest",
+    "jest": "latest",
+    "terser": "latest"
   },
   "scripts": {
     "test": "jest --coverage",
     "minify": "terser xiangqi.js -c -m --comments -o xiangqi.min.js"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true
   }
 }

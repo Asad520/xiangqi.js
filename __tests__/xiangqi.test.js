@@ -60,7 +60,7 @@ describe('Single Square Move Generation', () => {
       square: 'c3', verbose: true,
       moves:
         [{ color: 'b', from: 'c3', to: 'c2', flags: 'n', piece: 'p', iccs: 'c3c2' },
-          { color: 'b', from: 'c3', to: 'b3', flags: 'n', piece: 'p', iccs: 'c3b3' },
+        { color: 'b', from: 'c3', to: 'b3', flags: 'n', piece: 'p', iccs: 'c3b3' },
           { color: 'b', from: 'c3', to: 'd3', flags: 'n', piece: 'p', iccs: 'c3d3' }]
     } // TODO: verbose
     // {fen: 'rnbqk2r/ppp1pp1p/5n1b/3p2pQ/1P2P3/B1N5/P1PP1PPP/R3KBNR b KQkq - 3 5',

@@ -6,19 +6,19 @@
 
 'use strict';
 
-const Xiangqi = function(fen) {
+const Xiangqi = function (fen) {
   const BLACK = 'b';
-  const RED   = 'r';
+  const RED = 'r';
 
   const EMPTY = -1;
 
-  const PAWN    = 'p';
-  const CANNON  = 'c';
-  const ROOK    = 'r';
-  const KNIGHT  = 'n';
-  const BISHOP  = 'b';
+  const PAWN = 'p';
+  const CANNON = 'c';
+  const ROOK = 'r';
+  const KNIGHT = 'n';
+  const BISHOP = 'b';
   const ADVISER = 'a';
-  const KING    = 'k';
+  const KING = 'k';
 
   const SYMBOLS = 'pcrnbakPCRNBAK';
 
@@ -26,31 +26,34 @@ const Xiangqi = function(fen) {
 
   const POSSIBLE_RESULTS = Object.freeze(['1-0', '0-1', '1/2-1/2', '*']);
 
+  // prettier-ignore
   const PAWN_OFFSETS = Object.freeze({
     b: [ 0x10, -0x01, 0x01],
     r: [-0x10, -0x01, 0x01]
   });
 
+  // prettier-ignore
   const PIECE_OFFSETS = Object.freeze({
     c: [-0x10, 0x10, -0x01, 0x01],
     r: [-0x10, 0x10, -0x01, 0x01],
-    n: [-0x20 - 0x01, -0x20 + 0x01,  0x20 - 0x01, 0x20 + 0x01,
-        -0x10 - 0x02,  0x10 - 0x02, -0x10 + 0x02, 0x10 + 0x02],
-    b: [-0x20 - 0x02, 0x20 + 0x02, 0x20 - 0x02, -0x20 + 0x02],
-    a: [-0x10 - 0x01, 0x10 + 0x01, 0x10 - 0x01, -0x10 + 0x01],
-    k: [-0x10, 0x10, -0x01, 0x01]
+    n: [-0x20 - 0x01, -0x20 + 0x01,  0x20 - 0x01,  0x20 + 0x01,
+        -0x10 - 0x02,  0x10 - 0x02, -0x10 + 0x02,  0x10 + 0x02],
+    b: [-0x20 - 0x02,  0x20 + 0x02,  0x20 - 0x02, -0x20 + 0x02],
+    a: [-0x10 - 0x01,  0x10 + 0x01,  0x10 - 0x01, -0x10 + 0x01],
+    k: [-0x10, 0x10, -0x01, 0x01],
   });
 
   const FLAGS = Object.freeze({
     NORMAL: 'n',
-    CAPTURE: 'c'
+    CAPTURE: 'c',
   });
 
   const BITS = Object.freeze({
     NORMAL: 1,
-    CAPTURE: 2
+    CAPTURE: 2,
   });
 
+  // prettier-ignore
   const SQUARES = Object.freeze({
     a9: 0x00, b9: 0x01, c9: 0x02, d9: 0x03, e9: 0x04, f9: 0x05, g9: 0x06, h9: 0x07, i9: 0x08,
     a8: 0x10, b8: 0x11, c8: 0x12, d8: 0x13, e8: 0x14, f8: 0x15, g8: 0x16, h8: 0x17, i8: 0x18,
@@ -61,7 +64,7 @@ const Xiangqi = function(fen) {
     a3: 0x60, b3: 0x61, c3: 0x62, d3: 0x63, e3: 0x64, f3: 0x65, g3: 0x66, h3: 0x67, i3: 0x68,
     a2: 0x70, b2: 0x71, c2: 0x72, d2: 0x73, e2: 0x74, f2: 0x75, g2: 0x76, h2: 0x77, i2: 0x78,
     a1: 0x80, b1: 0x81, c1: 0x82, d1: 0x83, e1: 0x84, f1: 0x85, g1: 0x86, h1: 0x87, i1: 0x88,
-    a0: 0x90, b0: 0x91, c0: 0x92, d0: 0x93, e0: 0x94, f0: 0x95, g0: 0x96, h0: 0x97, i0: 0x98
+    a0: 0x90, b0: 0x91, c0: 0x92, d0: 0x93, e0: 0x94, f0: 0x95, g0: 0x96, h0: 0x97, i0: 0x98,
   });
 
   let board = new Array(256);
@@ -111,7 +114,9 @@ const Xiangqi = function(fen) {
 
     let tokens = fen.split(/\s+/);
     let position = tokens[0];
-    let square = 0, piece, color;
+    let square = 0,
+      piece,
+      color;
 
     clear(keep_headers);
 
@@ -145,10 +150,10 @@ const Xiangqi = function(fen) {
       1: 'FEN string must contain six space-delimited fields.',
       2: '6th field (move number) must be a positive integer.',
       3: '5th field (half move counter) must be a non-negative integer.',
-      4: '4th field (en-passant square) should be \'-\'.',
-      5: '3rd field (castling availability) should be \'-\'.',
+      4: "4th field (en-passant square) should be '-'.",
+      5: "3rd field (castling availability) should be '-'.",
       6: '2nd field (side to move) is invalid.',
-      7: '1st field (piece positions) does not contain 10 \'/\'-delimited rows.',
+      7: "1st field (piece positions) does not contain 10 '/'-delimited rows.",
       8: '1st field (piece positions) is invalid [consecutive numbers].',
       9: '1st field (piece positions) is invalid [invalid piece].',
       10: '1st field (piece positions) is invalid [row too large].',
@@ -211,14 +216,15 @@ const Xiangqi = function(fen) {
     }
 
     /* 8th criterion: every row is valid? */
+    // prettier-ignore
     const pieces = {
-        'p': {number: 0, squares: []}, 'P': {number: 0, squares: []},
-        'c': {number: 0, squares: []}, 'C': {number: 0, squares: []},
-        'r': {number: 0, squares: []}, 'R': {number: 0, squares: []},
-        'n': {number: 0, squares: []}, 'N': {number: 0, squares: []},
-        'b': {number: 0, squares: []}, 'B': {number: 0, squares: []},
-        'a': {number: 0, squares: []}, 'A': {number: 0, squares: []},
-        'k': {number: 0, squares: []}, 'K': {number: 0, squares: []}
+      p: { number: 0, squares: [] }, P: { number: 0, squares: [] },
+      c: { number: 0, squares: [] }, C: { number: 0, squares: [] },
+      r: { number: 0, squares: [] }, R: { number: 0, squares: [] },
+      n: { number: 0, squares: [] }, N: { number: 0, squares: [] },
+      b: { number: 0, squares: [] }, B: { number: 0, squares: [] },
+      a: { number: 0, squares: [] }, A: { number: 0, squares: [] },
+      k: { number: 0, squares: [] }, K: { number: 0, squares: [] },
       };
     let i, j, sum_fields, previous_was_number;
     for (i = 0; i < rows.length; i++) {
@@ -239,7 +245,7 @@ const Xiangqi = function(fen) {
           } catch (e) {
             return result(9);
           }
-          pieces[rows[i][j]].squares.push(i << 4 | sum_fields);
+          pieces[rows[i][j]].squares.push((i << 4) | sum_fields);
           sum_fields += 1;
           previous_was_number = false;
         }
@@ -315,7 +321,10 @@ const Xiangqi = function(fen) {
   }
 
   function generate_fen() {
-    let empty = 0, fen = '', color, piece;
+    let empty = 0,
+      fen = '',
+      color,
+      piece;
 
     for (let i = SQUARES.a9; i <= SQUARES.i0; ++i) {
       if (board[i] == null) {
@@ -396,8 +405,7 @@ const Xiangqi = function(fen) {
     const sq = SQUARES[square];
 
     /* don't let the user place more than one king */
-    if (piece.type === KING &&
-      !(kings[piece.color] === EMPTY || kings[piece.color] === sq)) {
+    if (piece.type === KING && !(kings[piece.color] === EMPTY || kings[piece.color] === sq)) {
       return false;
     }
 
@@ -433,7 +441,7 @@ const Xiangqi = function(fen) {
       from: from,
       to: to,
       flags: flags,
-      piece: board[from].type
+      piece: board[from].type,
     };
 
     if (board[to]) {
@@ -494,10 +502,8 @@ const Xiangqi = function(fen) {
 
           if (out_of_board(square)) break;
           else if (piece.type === KNIGHT && hobbling_horse_leg(i, j)) break;
-          else if (piece.type === BISHOP &&
-            (blocking_elephant_eye(i, j) || crossed_river(square, us))) break;
-          else if ((piece.type === ADVISER || piece.type === KING) &&
-            out_of_place(piece.type, square, us)) break;
+          else if (piece.type === BISHOP && (blocking_elephant_eye(i, j) || crossed_river(square, us))) break;
+          else if ((piece.type === ADVISER || piece.type === KING) && out_of_place(piece.type, square, us)) break;
 
           if (board[square] == null) {
             if (piece.type === CANNON && crossed) continue;
@@ -505,14 +511,12 @@ const Xiangqi = function(fen) {
           } else {
             if (piece.type === CANNON) {
               if (crossed) {
-                if (board[square].color === them)
-                  add_move(board, moves, i, square, BITS.CAPTURE);
+                if (board[square].color === them) add_move(board, moves, i, square, BITS.CAPTURE);
                 break;
               }
               crossed = true;
             } else {
-              if (board[square].color === them)
-                add_move(board, moves, i, square, BITS.CAPTURE);
+              if (board[square].color === them) add_move(board, moves, i, square, BITS.CAPTURE);
               break;
             }
           }
@@ -587,8 +591,14 @@ const Xiangqi = function(fen) {
     // knight
     for (i = 0, len = PIECE_OFFSETS[KNIGHT].length; i < len; ++i) {
       sq = square + PIECE_OFFSETS[KNIGHT][i];
-      if (board[sq] != null && !out_of_board(sq) && board[sq].color === them &&
-        board[sq].type === KNIGHT && !hobbling_horse_leg(sq, i < 4 ? 3 - i : 11 - i)) return true;
+      if (
+        board[sq] != null &&
+        !out_of_board(sq) &&
+        board[sq].color === them &&
+        board[sq].type === KNIGHT &&
+        !hobbling_horse_leg(sq, i < 4 ? 3 - i : 11 - i)
+      )
+        return true;
     }
     // king, rook, cannon
     for (i = 0, len = PIECE_OFFSETS[ROOK].length; i < len; ++i) {
@@ -612,8 +622,7 @@ const Xiangqi = function(fen) {
     // pawn
     for (i = 0, len = PAWN_OFFSETS[them].length; i < len; ++i) {
       sq = square - PAWN_OFFSETS[them][i];
-      if (board[sq] != null && !out_of_board(sq) &&
-        board[sq].color === them && board[sq].type === PAWN) return true;
+      if (board[sq] != null && !out_of_board(sq) && board[sq].color === them && board[sq].type === PAWN) return true;
     }
 
     return false;
@@ -633,14 +642,15 @@ const Xiangqi = function(fen) {
 
   function insufficient_material() {
     // TODO: more cases
-    let pieces = {}, piece;
+    let pieces = {},
+      piece;
     let num_pieces = 0;
 
     for (let sq in SQUARES) {
       if (SQUARES.hasOwnProperty(sq)) {
         piece = board[SQUARES[sq]];
         if (piece) {
-          pieces[piece.type] = (piece.type in pieces) ? pieces[piece.type] + 1 : 1;
+          pieces[piece.type] = piece.type in pieces ? pieces[piece.type] + 1 : 1;
           num_pieces++;
         }
       }
@@ -648,10 +658,13 @@ const Xiangqi = function(fen) {
 
     /* k vs. k */
     if (num_pieces === 2) return true;
-    else if (typeof pieces[KNIGHT] === 'undefined' &&
+    else if (
+      typeof pieces[KNIGHT] === 'undefined' &&
       typeof pieces[ROOK] === 'undefined' &&
       typeof pieces[CANNON] === 'undefined' &&
-      typeof pieces[PAWN] === 'undefined') return true;
+      typeof pieces[PAWN] === 'undefined'
+    )
+      return true;
 
     return false;
   }
@@ -662,7 +675,8 @@ const Xiangqi = function(fen) {
      * Zobrist key would be maintained in the make_move/undo_move functions,
      * avoiding the costly that we do below.
      */
-    let moves = [], move;
+    let moves = [],
+      move;
     let positions = {};
     let repetition = false;
 
@@ -675,10 +689,7 @@ const Xiangqi = function(fen) {
     while (true) {
       /* remove the last four fields in the FEN string, they're not needed
        * when checking for draw by rep */
-      let fen = generate_fen()
-        .split(' ')
-        .slice(0, 2)
-        .join(' ');
+      let fen = generate_fen().split(' ').slice(0, 2).join(' ');
 
       /* has the position occurred three or move times */
       positions[fen] = fen in positions ? positions[fen] + 1 : 1;
@@ -701,7 +712,7 @@ const Xiangqi = function(fen) {
       kings: { b: kings.b, r: kings.r },
       turn: turn,
       half_moves: half_moves,
-      move_number: move_number
+      move_number: move_number,
     });
   }
 
@@ -709,8 +720,7 @@ const Xiangqi = function(fen) {
     push(history, move);
 
     // if king was captured
-    if (board[move.to] != null && board[move.to].type === KING)
-      kings[board[move.to].color] = EMPTY;
+    if (board[move.to] != null && board[move.to].type === KING) kings[board[move.to].color] = EMPTY;
 
     board[move.to] = board[move.from];
     board[move.from] = null;
@@ -804,8 +814,8 @@ const Xiangqi = function(fen) {
         return algebraic(from);
       } else if (same_file > 0) {
         /* if the moving piece rests on the same file, use the rank symbol as the
-       * disambiguator
-       */
+         * disambiguator
+         */
         return algebraic(from).charAt(1);
       } else {
         /* else use the file symbol */
@@ -852,9 +862,7 @@ const Xiangqi = function(fen) {
 
     // if we're using the sloppy parser run a regex to grab piece, to, and from
     // this should parse invalid ICCS like: h2e2, H7-E7
-    let matches = clean_move.match(
-      /([a-iA-I][0-9])-?([a-iA-I][0-9])/
-    );
+    let matches = clean_move.match(/([a-iA-I][0-9])-?([a-iA-I][0-9])/);
     let piece, from, to;
     // TODO: support sloppy (must integrate with WXF)
     if (sloppy) {
@@ -900,7 +908,8 @@ const Xiangqi = function(fen) {
   }
 
   function algebraic(i) {
-    const f = file(i), r = rank(i);
+    const f = file(i),
+      r = rank(i);
     return 'abcdefghi'.substring(f, f + 1) + '9876543210'.substring(r, r + 1);
   }
 
@@ -926,19 +935,20 @@ const Xiangqi = function(fen) {
     if (piece === PAWN) {
       side = [0, 2, 4, 6, 8];
       if (color === RED) {
-        return rank(square) > 6 ||
-          (rank(square) > 4 && side.indexOf(file(square)) === -1);
+        return rank(square) > 6 || (rank(square) > 4 && side.indexOf(file(square)) === -1);
       } else {
-        return rank(square) < 3 ||
-          (rank(square) < 5 && side.indexOf(file(square)) === -1);
+        return rank(square) < 3 || (rank(square) < 5 && side.indexOf(file(square)) === -1);
       }
     } else if (piece === BISHOP) {
-      side[RED] =   [0x92, 0x96, 0x70, 0x74, 0x78, 0x52, 0x56];
+      // prettier-ignore
+      side[RED]   = [0x92, 0x96, 0x70, 0x74, 0x78, 0x52, 0x56];
       side[BLACK] = [0x02, 0x06, 0x20, 0x24, 0x28, 0x42, 0x46];
     } else if (piece === ADVISER) {
+      // prettier-ignore
       side[RED]   = [0x93, 0x95, 0x84, 0x73, 0x75];
       side[BLACK] = [0x03, 0x05, 0x14, 0x23, 0x25];
     } else if (piece === KING) {
+      // prettier-ignore
       side[RED]   = [0x93, 0x94, 0x95, 0x83, 0x84, 0x85, 0x73, 0x74, 0x75];
       side[BLACK] = [0x03, 0x04, 0x05, 0x13, 0x14, 0x15, 0x23, 0x24, 0x25];
     } else {
@@ -955,7 +965,7 @@ const Xiangqi = function(fen) {
   }
 
   function blocking_elephant_eye(square, index) {
-    const orientation = [-0x10 - 0x01, 0x10 + 0x01,  0x10 - 0x01, -0x10 + 0x01];
+    const orientation = [-0x10 - 0x01, 0x10 + 0x01, 0x10 - 0x01, -0x10 + 0x01];
     return board[square + orientation[index]] != null;
   }
 
@@ -1033,7 +1043,7 @@ const Xiangqi = function(fen) {
     BISHOP: BISHOP,
     ADVISER: ADVISER,
     KING: KING,
-    SQUARES: (function() {
+    SQUARES: (function () {
       /* from the ECMA-262 spec (section 12.6.4):
        * "The mechanics of enumerating the properties ... is
        * implementation dependent"
@@ -1049,21 +1059,21 @@ const Xiangqi = function(fen) {
         keys.push(algebraic(i));
       }
       return keys;
-    }()),
+    })(),
     FLAGS: FLAGS,
 
     /***************************************************************************
      * PUBLIC API
      **************************************************************************/
-    load: function(fen) {
+    load: function (fen) {
       return load(fen);
     },
 
-    reset: function() {
+    reset: function () {
       return reset();
     },
 
-    moves: function(options) {
+    moves: function (options) {
       /* The internal representation of a xiangqi move is in 0x9a format, and
        * not meant to be human-readable.  The code below converts the 0x9a
        * square coordinates to algebraic coordinates.  It also prunes an
@@ -1075,11 +1085,7 @@ const Xiangqi = function(fen) {
 
       for (let i = 0, len = ugly_moves.length; i < len; i++) {
         // does the user want a full move object (most likely not), or just ICCS
-        if (
-          typeof options !== 'undefined' &&
-          'verbose' in options &&
-          options.verbose
-        ) {
+        if (typeof options !== 'undefined' && 'verbose' in options && options.verbose) {
           moves.push(make_pretty(ugly_moves[i]));
         } else {
           moves.push(move_to_iccs(ugly_moves[i], false));
@@ -1089,19 +1095,19 @@ const Xiangqi = function(fen) {
       return moves;
     },
 
-    in_check: function() {
+    in_check: function () {
       return in_check();
     },
 
-    in_checkmate: function() {
+    in_checkmate: function () {
       return in_checkmate();
     },
 
-    in_stalemate: function() {
+    in_stalemate: function () {
       return in_stalemate();
     },
 
-    in_draw: function() {
+    in_draw: function () {
       return (
         half_moves >= 120 ||
         // Just a temporary workaround, should be refined in the future.
@@ -1110,15 +1116,15 @@ const Xiangqi = function(fen) {
       );
     },
 
-    insufficient_material: function() {
+    insufficient_material: function () {
       return insufficient_material();
     },
 
-    in_threefold_repetition: function() {
+    in_threefold_repetition: function () {
       return in_threefold_repetition();
     },
 
-    game_over: function() {
+    game_over: function () {
       return (
         half_moves >= 120 ||
         in_checkmate() ||
@@ -1129,16 +1135,17 @@ const Xiangqi = function(fen) {
       );
     },
 
-    validate_fen: function(fen) {
+    validate_fen: function (fen) {
       return validate_fen(fen);
     },
 
-    fen: function() {
+    fen: function () {
       return generate_fen();
     },
 
-    board: function() {
-      let output = [], row = [];
+    board: function () {
+      let output = [],
+        row = [];
 
       for (let i = SQUARES.a9; i <= SQUARES.i0; i++) {
         if (board[i] == null) {
@@ -1156,14 +1163,13 @@ const Xiangqi = function(fen) {
       return output;
     },
 
-    pgn: function(options) {
+    pgn: function (options) {
       /* using the specification from http://www.xqbase.com/protocol/cchess_pgn.htm
        * example for html usage: .pgn({ max_width: 72, newline_char: "<br />" })
        */
-      let newline = typeof options === 'object' &&
-        typeof options.newline_char === 'string' ? options.newline_char : '\n';
-      let max_width = typeof options === 'object' &&
-        typeof options.max_width === 'number' ? options.max_width : 0;
+      let newline =
+        typeof options === 'object' && typeof options.newline_char === 'string' ? options.newline_char : '\n';
+      let max_width = typeof options === 'object' && typeof options.max_width === 'number' ? options.max_width : 0;
       let result = [];
       let header_exists = false;
       let i;
@@ -1249,11 +1255,10 @@ const Xiangqi = function(fen) {
       return result.join('');
     },
 
-    load_pgn: function(pgn, options) {
+    load_pgn: function (pgn, options) {
       // allow the user to specify the sloppy move parser to work around over
       // disambiguation bugs in Fritz and Chessbase
-      let sloppy = typeof options !== 'undefined' && 'sloppy' in options ?
-        options.sloppy : false;
+      let sloppy = typeof options !== 'undefined' && 'sloppy' in options ? options.sloppy : false;
 
       function mask(str) {
         return str.replace(/\\/g, '\\');
@@ -1268,9 +1273,7 @@ const Xiangqi = function(fen) {
 
       function parse_pgn_header(header, options) {
         let newline_char =
-          typeof options === 'object' &&
-          typeof options.newline_char === 'string' ?
-            options.newline_char : '\r?\n';
+          typeof options === 'object' && typeof options.newline_char === 'string' ? options.newline_char : '\r?\n';
         let header_obj = {};
         let headers = header.split(new RegExp(mask(newline_char)));
         let key = '';
@@ -1288,14 +1291,11 @@ const Xiangqi = function(fen) {
       }
 
       const newline_char =
-        typeof options === 'object' && typeof options.newline_char === 'string' ?
-          options.newline_char : '\r?\n';
+        typeof options === 'object' && typeof options.newline_char === 'string' ? options.newline_char : '\r?\n';
 
       // RegExp to split header.
       // With default newline_char, will equal: /^(?:\s)*(((?:\r?\n)*\[[^\]]+\])+)/
-      const header_regex = new RegExp(
-        '^(?:\\s)*(((?:' + mask(newline_char) + ')*\\[[^\\]]+\\])+)'
-      );
+      const header_regex = new RegExp('^(?:\\s)*(((?:' + mask(newline_char) + ')*\\[[^\\]]+\\])+)');
 
       // If no header given, begin with moves.
       const header_string = header_regex.test(pgn) ? header_regex.exec(pgn)[1] : '';
@@ -1305,8 +1305,7 @@ const Xiangqi = function(fen) {
       /* parse PGN header */
       const headers = parse_pgn_header(header_string, options);
       for (let key in headers) {
-        if (headers.hasOwnProperty(key))
-          set_header([key, headers[key]]);
+        if (headers.hasOwnProperty(key)) set_header([key, headers[key]]);
       }
 
       /* load the starting position indicated by [FEN position] */
@@ -1319,9 +1318,7 @@ const Xiangqi = function(fen) {
       }
 
       /* delete header to get the moves */
-      let ms = pgn
-        .replace(header_string, '')
-        .replace(new RegExp(mask(newline_char), 'g'), ' ');
+      let ms = pgn.replace(header_string, '').replace(new RegExp(mask(newline_char), 'g'), ' ');
 
       /* delete comments */
       ms = ms.replace(/({[^}]+})+?/g, '');
@@ -1344,10 +1341,7 @@ const Xiangqi = function(fen) {
       let moves = trim(ms).split(new RegExp(/\s+/));
 
       /* delete empty entries */
-      moves = moves
-        .join(',')
-        .replace(/,,+/g, ',')
-        .split(',');
+      moves = moves.join(',').replace(/,,+/g, ',').split(',');
       let move = '';
 
       for (let half_move = 0; half_move < moves.length - 1; half_move++) {
@@ -1382,19 +1376,19 @@ const Xiangqi = function(fen) {
       return true;
     },
 
-    header: function() {
+    header: function () {
       return set_header(arguments);
     },
 
-    ascii: function() {
+    ascii: function () {
       return ascii();
     },
 
-    turn: function() {
+    turn: function () {
       return turn;
     },
 
-    move: function(move, options) {
+    move: function (move, options) {
       /* The move function can be called with in the following parameters:
        *
        * .move('Nxb7')      <- where 'move' is a case-sensitive SAN string
@@ -1406,8 +1400,7 @@ const Xiangqi = function(fen) {
 
       // allow the user to specify the sloppy move parser to work around over
       // disambiguation bugs in Fritz and Chessbase
-      const sloppy = typeof options !== 'undefined' && 'sloppy' in options ?
-        options.sloppy : false;
+      const sloppy = typeof options !== 'undefined' && 'sloppy' in options ? options.sloppy : false;
 
       let move_obj = null;
 
@@ -1418,11 +1411,7 @@ const Xiangqi = function(fen) {
 
         /* convert the pretty move object to an ugly move object */
         for (let i = 0, len = moves.length; i < len; i++) {
-          if (
-            move.from === algebraic(moves[i].from) &&
-            move.to === algebraic(moves[i].to) &&
-            !('' in moves[i])
-          ) {
+          if (move.from === algebraic(moves[i].from) && move.to === algebraic(moves[i].to) && !('' in moves[i])) {
             move_obj = moves[i];
             break;
           }
@@ -1445,7 +1434,7 @@ const Xiangqi = function(fen) {
       return pretty_move;
     },
 
-    undo: function() {
+    undo: function () {
       push(futures, null);
       const move = undo_move();
       if (move) {
@@ -1459,7 +1448,7 @@ const Xiangqi = function(fen) {
       }
     },
 
-    redo: function() {
+    redo: function () {
       push(history, null);
       const move = redo_move();
       if (move) {
@@ -1472,33 +1461,30 @@ const Xiangqi = function(fen) {
       }
     },
 
-    clear: function() {
+    clear: function () {
       return clear();
     },
 
-    put: function(piece, square) {
+    put: function (piece, square) {
       return put(piece, square);
     },
 
-    get: function(square) {
+    get: function (square) {
       return get(square);
     },
 
-    remove: function(square) {
+    remove: function (square) {
       return remove(square);
     },
 
-    perft: function(depth) {
+    perft: function (depth) {
       return perft(depth);
     },
 
-    history: function(options) {
+    history: function (options) {
       let reversed_history = [];
       let move_history = [];
-      let verbose =
-        typeof options !== 'undefined' &&
-        'verbose' in options &&
-        options.verbose;
+      let verbose = typeof options !== 'undefined' && 'verbose' in options && options.verbose;
 
       while (history.length > 0) {
         reversed_history.push(undo_move());
@@ -1515,7 +1501,7 @@ const Xiangqi = function(fen) {
       }
 
       return move_history;
-    }
+    },
   };
 };
 
@@ -1524,6 +1510,6 @@ const Xiangqi = function(fen) {
 if (typeof exports !== 'undefined') exports.Xiangqi = Xiangqi;
 /* export Xiangqi object for any RequireJS compatible environment */
 if (typeof define !== 'undefined')
-  define(function() {
+  define(function () {
     return Xiangqi;
   });

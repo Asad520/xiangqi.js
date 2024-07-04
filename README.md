@@ -7,6 +7,7 @@ detection - basically everything but the AI.
 xiangqi.js has been extensively tested in node.js and most modern browsers.
 
 ## Example Code
+
 The code below plays a complete game of xiangqi ... randomly.
 
 ```js
@@ -29,6 +30,7 @@ an example integration of xiangqi.js with xiangqiboard.js.
 ## API
 
 ### Constructor: Xiangqi([ fen ])
+
 The Xiangqi() constructor takes an optional parameter which specifies the board configuration
 in [Forsyth-Edwards Notation](http://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation).
 But there are many differences between [Chess FEN](http://www.xqbase.com/protocol/pgnfen2.htm) and [Xiangqi FEN](http://www.xqbase.com/protocol/cchess_fen.htm).
@@ -42,6 +44,7 @@ const xiangqi = new Xiangqi('5kC2/4a1N2/3a5/9/9/9/9/r3C4/4p4/2rK4R r - - 0 1');
 ```
 
 ### .ascii()
+
 Returns a string containing an ASCII diagram of the current position.
 
 ```js
@@ -68,8 +71,8 @@ xiangqi.ascii();
 //          a  b  c  d  e  f  g  h  i
 ```
 
-
 ### .board()
+
 Returns an 2D array representation of the current position.  Empty squares are
 represented by `null`.
 
@@ -105,8 +108,8 @@ xiangqi.board();
 //      {type: 'r', color: 'r'}]]
 ```
 
-
 ### .clear()
+
 Clears the board.
 
 ```js
@@ -116,6 +119,7 @@ xiangqi.fen();
 ```
 
 ### .fen()
+
 Returns the FEN string for the current position.
 
 ```js
@@ -131,6 +135,7 @@ xiangqi.fen();
 ```
 
 ### .game_over()
+
 Returns true if the game has ended via checkmate, stalemate, draw, threefold repetition, or insufficient material. Otherwise, returns false.
 
 ```js
@@ -148,6 +153,7 @@ xiangqi.game_over();
 ```
 
 ### .get(square)
+
 Returns the piece on the square:
 
 ```js
@@ -161,6 +167,7 @@ xiangqi.get('a6');
 ```
 
 ### .history([ options ])
+
 Returns a list containing the moves of the current game.  Options is an optional
 parameter which may contain a `verbose` flag.  See .moves() for a description of the
 verbose move fields.
@@ -183,6 +190,7 @@ xiangqi.history({ verbose: true });
 ```
 
 ### .in_check()
+
 Returns true or false if the side to move is in check.
 
 ```js
@@ -192,6 +200,7 @@ xiangqi.in_check();
 ```
 
 ### .in_checkmate()
+
 Returns true or false if the side to move has been checkmated.
 
 ```js
@@ -201,6 +210,7 @@ xiangqi.in_checkmate();
 ```
 
 ### .in_draw()
+
 Returns true or false if the game is drawn (60-move rule or insufficient material).
 
 ```js
@@ -210,6 +220,7 @@ xiangqi.in_draw();
 ```
 
 ### .in_stalemate()
+
 Returns true or false if the side to move has been stalemated.
 
 ```js
@@ -219,6 +230,7 @@ xiangqi.in_stalemate();
 ```
 
 ### .in_threefold_repetition()
+
 Returns true or false if the current board position has occurred three or more
 times.
 
@@ -241,6 +253,7 @@ xiangqi.in_threefold_repetition();
 ```
 
 ### .header()
+
 Allows header information to be added to PGN output. Any number of key/value
 pairs can be passed to .header().
 
@@ -261,6 +274,7 @@ xiangqi.header();
 ```
 
 ### .insufficient_material()
+
 Returns true if the game is drawn due to insufficient material (K vs. K or KBA vs. KBA); otherwise false.
 
 ```js
@@ -270,6 +284,7 @@ xiangqi.insufficient_material()
 ```
 
 ### .load(fen)
+
 The board is cleared, and the FEN string is loaded.  Returns true if the position was
 successfully loaded, otherwise false.
 
@@ -283,6 +298,7 @@ xiangqi.load('1nbakabn1/9/1c5c1/p1p3p1X/4p4/4P4/P1P3P1P/1C5C1/9/1NBAKABN1 b - - 
 ```
 
 ### .load_pgn(pgn, [ options ])
+
 Load the moves of a game stored in
 [Portable Game Notation](http://en.wikipedia.org/wiki/Portable_Game_Notation).
 `pgn` should be a string. Options is an optional `object` which may contain
@@ -390,6 +406,7 @@ xiangqi.fen();
 ```
 
 ### .move(move, [ options ])
+
 Attempts to make a move on the board, returning a move object if the move was
 legal, otherwise null.  The .move function can be called two ways, by passing
 a string in Internet Chinese Chess Server (ICCS):
@@ -444,7 +461,9 @@ xiangqi.move('Nge7');  // Ne7 is unambiguous because the knight on c6 is pinned
 xiangqi.move('Nge7', {sloppy: true});
 // -> { color: 'b', from: 'g8', to: 'e7', flags: 'n', piece: 'n', san: 'Ne7' }
 ```
+
 ### .moves([ options ])
+
 Returns a list of legal moves from the current position.  The function takes an optional parameter which controls the single-square move generation and verbosity.
 
 ```js
@@ -487,6 +506,7 @@ The _flags_ field in verbose mode may contain one or more of the following value
 - 'c' - a standard capture
 
 ### .pgn([ options ])
+
 Returns the game in PGN format. Options is an optional parameter which may include
 max width and/or a newline character settings.
 
@@ -503,6 +523,7 @@ xiangqi.pgn({ max_width: 5, newline_char: '<br />' });
 ```
 
 ### .put(piece, square)
+
 Place a piece on the square where piece is an object with the form
 { type: ..., color: ... }.  Returns true if the piece was successfully placed,
 otherwise, the board remains unchanged and false is returned.  `put()` will fail
@@ -534,6 +555,7 @@ xiangqi.put({ type: 'k', color: 'r' }, 'f1') // fail - two kings
 ```
 
 ### .remove(square)
+
 Remove and return the piece on _square_.
 
 ```js
@@ -550,9 +572,11 @@ xiangqi.remove('h1');
 ```
 
 ### .reset()
+
 Reset the board to the initial starting position.
 
 ### .turn()
+
 Returns the current side to move.
 
 ```js
@@ -562,6 +586,7 @@ xiangqi.turn();
 ```
 
 ### .undo()
+
 Take back the last half-move, returning a move object if successful, otherwise null.
 
 ```js
@@ -582,6 +607,7 @@ xiangqi.undo();
 ```
 
 ### .redo()
+
 Take forward the last half-move, returning a move object if successful, otherwise null.
 
 ```js
@@ -606,6 +632,7 @@ xiangqi.redo();
 ```
 
 ### .validate_fen(fen):
+
 Returns a validation object specifying validity or the errors found within the
 FEN string.
 
